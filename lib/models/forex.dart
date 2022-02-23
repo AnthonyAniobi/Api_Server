@@ -7,7 +7,7 @@ class Forex {
   static const String api = 'dd6d1b28cf27359d0fdbdce5f9121432';
 
   // static Map getCurrency()
-  static Future<String> exchange(String from, String to) async {
+  static Future<double> exchange(String from, String to) async {
     //base currency is restricted for the free plan so the default base is used
     http.Response response = await http
         .get(Uri.parse('$url/latest?access_key=$api&symbols=$to&format=1'));
@@ -15,7 +15,7 @@ class Forex {
       Map _rate = jsonDecode(response.body);
       return _rate['rates'][to];
     } else {
-      return 'failed';
+      return 0;
     }
   }
 

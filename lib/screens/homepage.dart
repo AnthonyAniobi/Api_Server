@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 40),
-            CForms.text(controller: _inputController, label: 'JPY'),
+            CForms.text(controller: _inputController, label: 'EUR'),
             CForms.text(
                 controller: _outputController,
                 label: CCurrency.data[_indexCurrency][0],
@@ -91,8 +91,8 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Image.asset('assets/flags/jp.png'),
-                              CFont.regular(text: 'JPY'),
+                              Image.asset('assets/flags/fi.png'),
+                              CFont.regular(text: 'EUR'),
                               const Icon(Icons.arrow_drop_down),
                               const SizedBox(width: 2),
                             ]),
@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<double> _convert() async {
+  Future<void> _convert() async {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -201,11 +201,21 @@ class _HomePageState extends State<HomePage> {
           return const Center(child: CircularProgressIndicator());
         });
 
-    String result =
+    if (double.tryParse(_inputController.text) == null) {
+      return;
+    }
+
+    double _input = double.parse(_inputController.text);
+
+    // String result =
+    double result =
         await Forex.exchange('YEN', CCurrency.data[_indexCurrency][0]);
+
+    setState(() {
+      _outputController.text = (_input * result).toString();
+    });
+
     Navigator.pop(context);
-    double output = double.tryParse(result)!;
-    return output;
   }
 
   String _time() {
