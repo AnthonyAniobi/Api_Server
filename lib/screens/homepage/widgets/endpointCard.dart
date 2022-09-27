@@ -86,6 +86,7 @@ class EndpointCard extends StatelessWidget {
                                       endpoints: endpoints,
                                       currentEndpoint: currentEndpoint,
                                       edit: true,
+                                      editIndex: listIndex,
                                     ));
                           }),
                       EditOrDeleteButton(
@@ -94,7 +95,13 @@ class EndpointCard extends StatelessWidget {
                             final bool _result = await Dialogs.warning(context,
                                 title: 'Delete Endpoint',
                                 message:
-                                    'Are you sure you want to delete endpoint');
+                                    'Are you sure you want to delete `${endpoints.value[listIndex].title}` endpoint');
+                            if (_result) {
+                              endpoints.value.removeAt(listIndex);
+                              currentEndpoint.value = 0;
+                              currentEndpoint.notifyListeners();
+                              endpoints.notifyListeners();
+                            }
                           }),
                     ],
                   ),

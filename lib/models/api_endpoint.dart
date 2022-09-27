@@ -1,8 +1,8 @@
-enum RequestType {
-  Get,
-  Post,
-  Update,
-  Delete,
+class RequestType {
+  static const String get = "GET";
+  static const String post = "POST";
+  static const String update = "UPDATE";
+  static const String delete = "Delete";
 }
 
 class ApiEndpoint {
@@ -10,13 +10,13 @@ class ApiEndpoint {
   final String url;
   final Map result;
   final Map headers;
-  final RequestType type;
+  final String type;
 
   ApiEndpoint(this.title, this.url, this.result, this.headers, this.type);
 
   static List<ApiEndpoint> all = [
-    ApiEndpoint('title', 'url', {}, {}, RequestType.Get),
+    ApiEndpoint('title', 'url', {}, {}, RequestType.get),
     ApiEndpoint(
-        'title1', 'url1', {'url': 22}, {'token': '23'}, RequestType.Post),
+        'title1', 'url1', {'url': 22}, {'token': '23'}, RequestType.post),
   ];
 }

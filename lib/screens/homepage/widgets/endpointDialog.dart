@@ -1,30 +1,27 @@
 import 'package:api_server/models/api_endpoint.dart';
 import 'package:flutter/material.dart';
 
-class EndpointDialog extends StatefulWidget {
+class EndpointDialog extends StatelessWidget {
   final ValueNotifier<List<ApiEndpoint>> endpoints;
   final ValueNotifier<int> currentEndpoint;
   final bool edit;
-  const EndpointDialog(
-      {super.key,
-      required this.endpoints,
-      required this.currentEndpoint,
-      this.edit = false});
+  final int? editIndex;
 
-  @override
-  State<EndpointDialog> createState() => _EndpointDialogState();
-}
-
-class _EndpointDialogState extends State<EndpointDialog> {
   final TextEditingController _title = TextEditingController();
   final TextEditingController _url = TextEditingController();
+  ValueNotifier<String> _requestType = ValueNotifier<String>(RequestType.get);
 
-  @override
-  void initState() {
-    super.initState();
-    if (widget.edit) {
-      _title.text = widget.endpoints.value[widget.currentEndpoint.value].title;
-      _url.text = widget.endpoints.value[widget.currentEndpoint.value].url;
+  EndpointDialog({
+    super.key,
+    required this.endpoints,
+    required this.currentEndpoint,
+    this.edit = false,
+    this.editIndex,
+  }) {
+    if (edit) {
+      _title.text = endpoints.value[editIndex!].title;
+      _url.text = endpoints.value[editIndex!].url;
+      _requestType.value = endpoints.value[editIndex!].type;
       // add other fields here
     }
   }
@@ -33,9 +30,10 @@ class _EndpointDialogState extends State<EndpointDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(20),
         child: SizedBox(
-          height: 200,
+          height: 500,
+          width: 400,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -58,6 +56,8 @@ class _EndpointDialogState extends State<EndpointDialog> {
                 ),
               ),
               const SizedBox(height: 20),
+              _requestEndpoints(),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -69,23 +69,20 @@ class _EndpointDialogState extends State<EndpointDialog> {
                   const SizedBox(width: 20),
                   ElevatedButton(
                       onPressed: () {
-                        if (widget.edit) {
-                          widget.endpoints.value[widget.currentEndpoint.value] =
-                              ApiEndpoint(_title.text, _url.text, {}, {},
-                                  RequestType.Get);
-                          widget.endpoints.notifyListeners();
+                        if (edit) {
+                          endpoints.value[editIndex!] = ApiEndpoint(_title.text,
+                              _url.text, {}, {}, _requestType.value);
+                          endpoints.notifyListeners();
                           return Navigator.pop(context);
                         }
-                        print('added endpoint');
-                        widget.endpoints.value.add(
-                          ApiEndpoint(
-                              _title.text, _url.text, {}, {}, RequestType.Get),
+                        endpoints.value.add(
+                          ApiEndpoint(_title.text, _url.text, {}, {},
+                              _requestType.value),
                         );
                         Navigator.pop(context);
-                        widget.endpoints.notifyListeners();
-                        widget.currentEndpoint.value =
-                            widget.endpoints.value.length - 1;
-                        widget.currentEndpoint.notifyListeners();
+                        endpoints.notifyListeners();
+                        currentEndpoint.value = endpoints.value.length - 1;
+                        currentEndpoint.notifyListeners();
                       },
                       child: const Text("Save")),
                 ],
@@ -95,6 +92,46 @@ class _EndpointDialogState extends State<EndpointDialog> {
         ),
       ),
     );
-    ;
+  }
+
+  Widget _requestEndpoints() {
+    return ValueListenableBuilder(
+        valueListenable: _requestType,
+        builder: ((context, value, child) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _requestButton(RequestType.get, _requestType),
+                _requestButton(RequestType.post, _requestType),
+                _requestButton(RequestType.delete, _requestType),
+                _requestButton(RequestType.update, _requestType),
+              ],
+            )));
+  }
+
+  Widget _requestButton(String value, ValueNotifier<String> currentVal) {
+    return InkWell(
+      onTap: () {
+        currentVal.value = value;
+        currentVal.notifyListeners();
+      },
+      child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          decoration: BoxDecoration(
+              color: value == currentVal.value
+                  ? Colors.blue
+                  : Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(5),
+              boxShadow: [
+                BoxShadow(
+                    blurRadius: 5,
+                    offset: const Offset(2, 2),
+                    color: Colors.black.withOpacity(0.25))
+              ]),
+          child: Text(
+            value,
+            style: TextStyle(
+                color: value == currentVal.value ? Colors.white : Colors.black),
+          )),
+    );
   }
 }
