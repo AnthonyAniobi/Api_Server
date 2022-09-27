@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:api_server/models/api_endpoint.dart';
 import 'package:api_server/screens/homepage/widgets/endpointWidget.dart';
 import 'package:api_server/screens/homepage/widgets/json_editor.dart';
+import 'package:api_server/screens/homepage/widgets/topAppBar.dart';
 import 'package:flutter/material.dart';
 
 class Homepage extends StatelessWidget {
@@ -15,25 +16,9 @@ class Homepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text(
-          'Api Server',
-          style: TextStyle(
-            color: Colors.black,
-          ),
-        ),
-        actions: [
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.play_arrow,
-                color: Colors.black,
-              ))
-        ],
-      ),
       body: Column(
         children: [
+          TopAppBar(),
           Expanded(
             child: Row(
               children: [
