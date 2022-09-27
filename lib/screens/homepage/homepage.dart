@@ -5,16 +5,12 @@ import 'package:api_server/screens/homepage/widgets/endpointWidget.dart';
 import 'package:api_server/screens/homepage/widgets/json_editor.dart';
 import 'package:flutter/material.dart';
 
-class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+class Homepage extends StatelessWidget {
+  Homepage({super.key});
 
-  @override
-  State<Homepage> createState() => _HomepageState();
-}
-
-class _HomepageState extends State<Homepage> {
-  List<ApiEndpoint> endpoints = ApiEndpoint.all;
-  int currentEndpoint = 0;
+  ValueNotifier<List<ApiEndpoint>> endpoints =
+      ValueNotifier<List<ApiEndpoint>>([]);
+  ValueNotifier<int> currentEndpoint = ValueNotifier<int>(0);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +26,7 @@ class _HomepageState extends State<Homepage> {
         actions: [
           IconButton(
               onPressed: () {},
-              icon: Icon(
+              icon: const Icon(
                 Icons.play_arrow,
                 color: Colors.black,
               ))
@@ -42,26 +38,25 @@ class _HomepageState extends State<Homepage> {
             child: Row(
               children: [
                 EndpointsWidget(
-                  selectedEndpoint: currentEndpoint,
-                  onChange: (index) {
-                    setState(() {
-                      currentEndpoint = index;
-                    });
-                  },
+                  currentEndpoint: currentEndpoint,
                   endpoints: endpoints,
                 ),
                 Expanded(
                     flex: 4,
-                    child: JsonEditorWidget(
-                      json: endpoints[currentEndpoint].result,
-                      onChanged: (value) {
-                        endpoints[currentEndpoint].result.clear();
-                        endpoints[currentEndpoint]
-                            .result
-                            .addAll(jsonDecode(value.toString()));
-                      },
-                    )),
-                // Expanded(flex: 1, child: Container(color: Colors.white)),
+                    child: ValueListenableBuilder(
+                        valueListenable: endpoints,
+                        builder: (context, endpointValues, child) {
+                          return endpointValues.isEmpty
+                              ? const Center(
+                                  child: Text(
+                                      textAlign: TextAlign.center,
+                                      'No Endpoint created!\nClick Add Endpoints to create an endpoint'),
+                                )
+                              : JsonEditorWidget(
+                                  currentEndpoint: currentEndpoint,
+                                  endpointList: endpoints,
+                                );
+                        })),
               ],
             ),
           ),

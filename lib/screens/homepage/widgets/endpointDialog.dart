@@ -2,8 +2,14 @@ import 'package:api_server/models/api_endpoint.dart';
 import 'package:flutter/material.dart';
 
 class EndpointDialog extends StatefulWidget {
-  final List<ApiEndpoint> endpoints;
-  const EndpointDialog({super.key, required this.endpoints});
+  final ValueNotifier<List<ApiEndpoint>> endpoints;
+  final ValueNotifier<int> currentEndpoint;
+  final bool edit;
+  const EndpointDialog(
+      {super.key,
+      required this.endpoints,
+      required this.currentEndpoint,
+      this.edit = false});
 
   @override
   State<EndpointDialog> createState() => _EndpointDialogState();
@@ -12,6 +18,16 @@ class EndpointDialog extends StatefulWidget {
 class _EndpointDialogState extends State<EndpointDialog> {
   final TextEditingController _title = TextEditingController();
   final TextEditingController _url = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.edit) {
+      _title.text = widget.endpoints.value[widget.currentEndpoint.value].title;
+      _url.text = widget.endpoints.value[widget.currentEndpoint.value].url;
+      // add other fields here
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +69,23 @@ class _EndpointDialogState extends State<EndpointDialog> {
                   const SizedBox(width: 20),
                   ElevatedButton(
                       onPressed: () {
-                        widget.endpoints.add(
+                        if (widget.edit) {
+                          widget.endpoints.value[widget.currentEndpoint.value] =
+                              ApiEndpoint(_title.text, _url.text, {}, {},
+                                  RequestType.Get);
+                          widget.endpoints.notifyListeners();
+                          return Navigator.pop(context);
+                        }
+                        print('added endpoint');
+                        widget.endpoints.value.add(
                           ApiEndpoint(
                               _title.text, _url.text, {}, {}, RequestType.Get),
                         );
                         Navigator.pop(context);
-                        // onChange(widget.endpoints.length - 1);
+                        widget.endpoints.notifyListeners();
+                        widget.currentEndpoint.value =
+                            widget.endpoints.value.length - 1;
+                        widget.currentEndpoint.notifyListeners();
                       },
                       child: const Text("Save")),
                 ],

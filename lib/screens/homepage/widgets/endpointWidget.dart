@@ -4,15 +4,11 @@ import 'package:api_server/screens/homepage/widgets/endpointDialog.dart';
 import 'package:flutter/material.dart';
 
 class EndpointsWidget extends StatelessWidget {
-  final Function(int) onChange;
-  final List<ApiEndpoint> endpoints;
-  final int selectedEndpoint;
+  final ValueNotifier<List<ApiEndpoint>> endpoints;
+  final ValueNotifier<int> currentEndpoint;
 
   EndpointsWidget(
-      {super.key,
-      required this.onChange,
-      required this.endpoints,
-      required this.selectedEndpoint});
+      {super.key, required this.currentEndpoint, required this.endpoints});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +27,10 @@ class EndpointsWidget extends StatelessWidget {
                     showDialog(
                         context: context,
                         builder: ((context) {
-                          return EndpointDialog(endpoints: endpoints);
+                          return EndpointDialog(
+                            endpoints: endpoints,
+                            currentEndpoint: currentEndpoint,
+                          );
                         }));
                   },
                   icon: Icon(Icons.add)),
@@ -45,15 +44,18 @@ class EndpointsWidget extends StatelessWidget {
             endIndent: 0,
           ),
           Expanded(
-              child: ListView.builder(
-                  itemCount: endpoints.length,
-                  itemBuilder: ((context, index) {
-                    return EndpointCard(
-                        selectedEndpoint: selectedEndpoint,
-                        onChange: onChange,
-                        endpoints: endpoints,
-                        listIndex: index);
-                  })))
+              child: ValueListenableBuilder(
+                  valueListenable: endpoints,
+                  builder: (context, endpointList, child) {
+                    return ListView.builder(
+                        itemCount: endpointList.length,
+                        itemBuilder: (context, index) {
+                          return EndpointCard(
+                              endpoints: endpoints,
+                              currentEndpoint: currentEndpoint,
+                              listIndex: index);
+                        });
+                  }))
         ],
       ),
     );
