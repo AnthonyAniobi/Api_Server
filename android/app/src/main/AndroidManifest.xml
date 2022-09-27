@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.anthonyaniobi.africhange">
+    package="com.example.api_server">
    <application
-        android:label="africhange"
+        android:label="api_server"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

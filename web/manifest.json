@@ -1,6 +1,6 @@
 {
-    "name": "africhange",
-    "short_name": "africhange",
+    "name": "api_server",
+    "short_name": "api_server",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
