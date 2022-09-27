@@ -14,25 +14,12 @@ class JsonEditorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ElevatedButton(
-                  onPressed: () {}, child: const Text("Set endpoint")),
-            ],
-          ),
-          Expanded(
-            child: JsonEditor.string(
-              // openDebug: true,
-              jsonString: jsonEncode(json),
-              onValueChanged: (value) {
-                onChanged(value);
-              },
-            ),
-          ),
-        ],
+      child: JsonEditor.string(
+        // openDebug: true,
+        jsonString: jsonEncode(json),
+        onValueChanged: (value) {
+          onChanged(value);
+        },
       ),
     );
   }

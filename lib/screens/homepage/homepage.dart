@@ -36,30 +36,41 @@ class _HomepageState extends State<Homepage> {
               ))
         ],
       ),
-      body: Row(
+      body: Column(
         children: [
-          EndpointsWidget(
-            selectedEndpoint: currentEndpoint,
-            onChange: (index) {
-              setState(() {
-                currentEndpoint = index;
-              });
-            },
-            endpoints: endpoints,
-          ),
           Expanded(
-              flex: 4,
-              child: JsonEditorWidget(
-                json: endpoints[currentEndpoint].result,
-                onChanged: (value) {
-                  endpoints[currentEndpoint].result.clear();
-                  endpoints[currentEndpoint]
-                      .result
-                      .addAll(jsonDecode(value.toString()));
-                  print(value);
-                },
-              )),
-          // Expanded(flex: 1, child: Container(color: Colors.white)),
+            child: Row(
+              children: [
+                EndpointsWidget(
+                  selectedEndpoint: currentEndpoint,
+                  onChange: (index) {
+                    setState(() {
+                      currentEndpoint = index;
+                    });
+                  },
+                  endpoints: endpoints,
+                ),
+                Expanded(
+                    flex: 4,
+                    child: JsonEditorWidget(
+                      json: endpoints[currentEndpoint].result,
+                      onChanged: (value) {
+                        endpoints[currentEndpoint].result.clear();
+                        endpoints[currentEndpoint]
+                            .result
+                            .addAll(jsonDecode(value.toString()));
+                      },
+                    )),
+                // Expanded(flex: 1, child: Container(color: Colors.white)),
+              ],
+            ),
+          ),
+          Container(
+            height: 200,
+            decoration: BoxDecoration(
+              color: Colors.grey[700],
+            ),
+          ),
         ],
       ),
     );
