@@ -1,9 +1,11 @@
 import 'package:api_server/models/api_endpoint.dart';
+import 'package:api_server/screens/aboutpage/aboutpage.dart';
 import 'package:flutter/material.dart';
 
 class TopAppBar extends StatelessWidget {
   final ValueNotifier<List<ApiEndpoint>> endpoints;
-  const TopAppBar({super.key, required this.endpoints});
+  final ValueNotifier<bool> isRunning = ValueNotifier(false);
+  TopAppBar({super.key, required this.endpoints});
 
   @override
   Widget build(BuildContext context) {
@@ -30,23 +32,34 @@ class TopAppBar extends StatelessWidget {
             ),
             Row(
               children: [
-                Tooltip(
-                  message: 'run',
-                  child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.play_arrow,
-                        color: Colors.black,
-                      )),
-                ),
+                ValueListenableBuilder(
+                    valueListenable: isRunning,
+                    builder: (context, running, child) {
+                      return Tooltip(
+                        message: running ? 'stop' : 'run',
+                        child: IconButton(
+                            onPressed: () {
+                              isRunning.value = !isRunning.value;
+                              isRunning.notifyListeners();
+                            },
+                            icon: Icon(
+                              running ? Icons.stop : Icons.play_arrow,
+                              color: Colors.black,
+                            )),
+                      );
+                    }),
                 PopupMenuButton(
                   tooltip: 'options',
                   icon: Icon(Icons.arrow_drop_down_sharp),
-                  onSelected: (value) {},
+                  onSelected: (value) {
+                    print(value);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AboutPage()));
+                  },
                   itemBuilder: ((context) => [
-                        PopupMenuItem(value: '1', child: Text('Howdy')),
-                        PopupMenuItem(value: '2', child: Text('Howdy')),
-                        PopupMenuItem(value: '3', child: Text('Howdy')),
+                        const PopupMenuItem(value: '1', child: Text('About')),
+                        const PopupMenuItem(value: '2', child: Text('Howdy')),
+                        const PopupMenuItem(value: '3', child: Text('Howdy')),
                       ]),
                 ),
               ],

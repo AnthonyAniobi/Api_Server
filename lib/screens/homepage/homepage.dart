@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:api_server/models/api_endpoint.dart';
+import 'package:api_server/screens/homepage/widgets/bottom_terminal.dart';
 import 'package:api_server/screens/homepage/widgets/endpointWidget.dart';
 import 'package:api_server/screens/homepage/widgets/json_editor.dart';
 import 'package:api_server/screens/homepage/widgets/topAppBar.dart';
@@ -12,6 +13,8 @@ class Homepage extends StatelessWidget {
   ValueNotifier<List<ApiEndpoint>> endpoints =
       ValueNotifier<List<ApiEndpoint>>([]);
   ValueNotifier<int> currentEndpoint = ValueNotifier<int>(0);
+  ValueNotifier<List<String>> consoleMessages =
+      ValueNotifier<List<String>>(List.generate(20, (index) => 1.toString()));
 
   @override
   Widget build(BuildContext context) {
@@ -45,12 +48,7 @@ class Homepage extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              color: Colors.blueGrey.shade700,
-            ),
-          ),
+          BottomTerminal(consoleMessage: consoleMessages),
         ],
       ),
     );
