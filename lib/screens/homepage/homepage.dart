@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:api_server/models/api_endpoint.dart';
+import 'package:api_server/models/server/server.dart';
 import 'package:api_server/screens/homepage/widgets/bottom_terminal.dart';
 import 'package:api_server/screens/homepage/widgets/endpointWidget.dart';
 import 'package:api_server/screens/homepage/widgets/json_editor.dart';
@@ -32,23 +33,18 @@ class Homepage extends StatelessWidget {
                           padding: const EdgeInsets.all(20),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
+                            children: const [
+                              Text(
                                 'Running  !!!',
                                 style: TextStyle(
                                   fontSize: 27,
                                   fontWeight: FontWeight.normal,
                                 ),
                               ),
-                              const SizedBox(height: 10),
-                              const CircularProgressIndicator(),
-                              const SizedBox(height: 10),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    isRunning.value = false;
-                                    isRunning.notifyListeners();
-                                  },
-                                  child: const Text('Stop Server'))
+                              SizedBox(height: 10),
+                              CircularProgressIndicator(),
+                              SizedBox(height: 10),
+                              Text('Click the Stop button above to Stop Server')
                             ],
                           ))
                       : Row(
