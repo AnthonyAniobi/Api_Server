@@ -29,4 +29,27 @@ class Dialogs {
             }) ??
         false;
   }
+
+  static Future<void> alert(BuildContext context,
+      {required String title, required String message}) async {
+    await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            icon: const Icon(
+              Icons.info,
+              color: Colors.orangeAccent,
+            ),
+            content: Text(message),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Close')),
+            ],
+          );
+        });
+  }
 }

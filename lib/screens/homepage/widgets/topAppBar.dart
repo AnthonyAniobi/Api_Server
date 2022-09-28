@@ -1,7 +1,9 @@
+import 'package:api_server/models/api_endpoint.dart';
 import 'package:flutter/material.dart';
 
 class TopAppBar extends StatelessWidget {
-  const TopAppBar({super.key});
+  final ValueNotifier<List<ApiEndpoint>> endpoints;
+  const TopAppBar({super.key, required this.endpoints});
 
   @override
   Widget build(BuildContext context) {

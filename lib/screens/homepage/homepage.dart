@@ -18,7 +18,7 @@ class Homepage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          TopAppBar(),
+          TopAppBar(endpoints: endpoints),
           Expanded(
             child: Row(
               children: [
@@ -48,7 +48,7 @@ class Homepage extends StatelessWidget {
           Container(
             height: 200,
             decoration: BoxDecoration(
-              color: Colors.grey[700],
+              color: Colors.blueGrey.shade700,
             ),
           ),
         ],

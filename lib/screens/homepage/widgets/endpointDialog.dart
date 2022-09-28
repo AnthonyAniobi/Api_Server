@@ -1,5 +1,6 @@
-import 'package:api_server/models/api_endpoint.dart';
+import 'package:api_server/widgets/dialogs.dart';
 import 'package:flutter/material.dart';
+import 'package:api_server/models/api_endpoint.dart';
 
 class EndpointDialog extends StatelessWidget {
   final ValueNotifier<List<ApiEndpoint>> endpoints;
@@ -74,7 +75,11 @@ class EndpointDialog extends StatelessWidget {
                       child: const Text("Cancel")),
                   const SizedBox(width: 20),
                   ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        if (!_verifyEntry(context)) {
+                          return;
+                        }
+
                         if (edit) {
                           final Map previousResponse =
                               endpoints.value[editIndex!].result;
@@ -110,6 +115,36 @@ class EndpointDialog extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool _verifyEntry(BuildContext context) {
+    bool result = true;
+    if (_title.text.isEmpty) {
+      result = false;
+      Dialogs.alert(context,
+          title: 'Empty Title', message: "Title should not be empty");
+    } else if (_url.text.isEmpty) {
+      if (endpoints.value.isEmpty) {
+        result = true;
+        _url.text = '/';
+      } else {
+        result = false;
+        Dialogs.alert(context,
+            title: 'Empty Endpoint',
+            message: "The endpoint url should not be empty");
+      }
+    } else {
+      for (ApiEndpoint ePoint in endpoints.value) {
+        if (ePoint.url == _url.text && ePoint.type == _requestType.value) {
+          result = false;
+          Dialogs.alert(context,
+              title: 'Endpoint exists',
+              message:
+                  "This endpoint has already been created please use another url");
+        }
+      }
+    }
+    return result;
   }
 
   Widget _requestEndpoints() {
