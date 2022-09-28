@@ -1,33 +1,139 @@
 import 'dart:convert';
 
 import 'package:api_server/models/api_endpoint.dart';
-import 'package:code_editor/code_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:json_editor/json_editor.dart';
+
+class _JsonTabs {
+  static const String response = 'Response';
+  static const String body = 'Body';
+  static const String header = 'Header';
+  // tool tips
+  static const String responseTooltip = 'json response';
+  static const String bodyTooltip = 'request body';
+  static const String headerTooltip = 'header response';
+}
 
 class JsonEditorWidget extends StatelessWidget {
   final ValueNotifier<List<ApiEndpoint>> endpointList;
   final ValueNotifier<int> currentEndpoint;
-  const JsonEditorWidget(
+  JsonEditorWidget(
       {super.key, required this.endpointList, required this.currentEndpoint});
+
+  //local variables
+  final ValueNotifier<String> currentTab = ValueNotifier(_JsonTabs.response);
+  Color tabBackgroundColor = Colors.white;
+  Color selectedTabColor = Colors.white;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-      child: ValueListenableBuilder(
-          valueListenable: currentEndpoint,
-          builder: (context, currentIndex, child) {
-            return JsonEditor.string(
-              // openDebug: true,
-              jsonString: jsonEncode(endpointList.value[currentIndex].result),
-              onValueChanged: (value) {
-                endpointList.value[currentIndex].result.clear();
-                endpointList.value[currentIndex].result
-                    .addAll(jsonDecode(value.toString()));
-              },
-            );
-          }),
+    selectedTabColor = Theme.of(context).scaffoldBackgroundColor;
+    return ValueListenableBuilder(
+        valueListenable: currentTab,
+        builder: (context, tab, child) {
+          return Column(
+            children: [
+              Container(
+                color: tabBackgroundColor,
+                child: Row(
+                  children: [
+                    _jsonTabButton(_JsonTabs.response, currentTab,
+                        _JsonTabs.responseTooltip),
+                    _jsonTabButton(
+                        _JsonTabs.body, currentTab, _JsonTabs.bodyTooltip),
+                    _jsonTabButton(
+                        _JsonTabs.header, currentTab, _JsonTabs.headerTooltip),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                  child: ValueListenableBuilder(
+                      valueListenable: currentEndpoint,
+                      builder: (context, currentIndex, child) {
+                        return JsonEditorTab(
+                          endpoint: endpointList.value[currentIndex],
+                          jsonTab: tab,
+                        );
+                      }),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  Widget _jsonTabButton(
+      String value, ValueNotifier<String> currentTab, String tooltip) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 10),
+      child: Tooltip(
+        message: tooltip,
+        child: InkWell(
+          onTap: () {
+            currentTab.value = value;
+            currentTab.notifyListeners();
+          },
+          child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: BoxDecoration(
+                color: value == currentTab.value
+                    ? selectedTabColor
+                    : tabBackgroundColor,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(5)),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(
+                    color:
+                        value == currentTab.value ? Colors.black : Colors.grey),
+              )),
+        ),
+      ),
+    );
+  }
+}
+
+class JsonEditorTab extends StatelessWidget {
+  JsonEditorTab({
+    Key? key,
+    required this.endpoint,
+    required this.jsonTab,
+  }) : super(key: key) {
+    if (jsonTab == _JsonTabs.body) {
+      _json = endpoint.requestBody;
+    } else if (jsonTab == _JsonTabs.header) {
+      _json = endpoint.headers;
+    } else if (jsonTab == _JsonTabs.response) {
+      _json = endpoint.result;
+    } else {
+      _json = {};
+    }
+  }
+
+  final ApiEndpoint endpoint;
+  final String jsonTab;
+  // local variables
+  Map _json = {};
+
+  @override
+  Widget build(BuildContext context) {
+    return JsonEditor.string(
+      jsonString: jsonEncode(_json),
+      onValueChanged: (value) {
+        if (jsonTab == _JsonTabs.body) {
+          endpoint.requestBody.clear();
+          endpoint.requestBody.addAll(jsonDecode(value.toString()));
+        } else if (jsonTab == _JsonTabs.header) {
+          endpoint.headers.clear();
+          endpoint.headers.addAll(jsonDecode(value.toString()));
+        } else {
+          endpoint.result.clear();
+          endpoint.result.addAll(jsonDecode(value.toString()));
+        }
+      },
     );
   }
 }

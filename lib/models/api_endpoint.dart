@@ -10,13 +10,9 @@ class ApiEndpoint {
   final String url;
   final Map result;
   final Map headers;
+  final Map requestBody;
   final String type;
 
-  ApiEndpoint(this.title, this.url, this.result, this.headers, this.type);
-
-  static List<ApiEndpoint> all = [
-    ApiEndpoint('title', 'url', {}, {}, RequestType.get),
-    ApiEndpoint(
-        'title1', 'url1', {'url': 22}, {'token': '23'}, RequestType.post),
-  ];
+  ApiEndpoint(this.title, this.url, this.result, this.headers, this.type,
+      this.requestBody);
 }

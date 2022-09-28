@@ -59,6 +59,12 @@ class EndpointDialog extends StatelessWidget {
               _requestEndpoints(),
               const SizedBox(height: 20),
               Row(
+                children: [
+                  Checkbox(value: false, onChanged: (value) {}),
+                  const Text('Requires Authentication'),
+                ],
+              ),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   MaterialButton(
@@ -70,14 +76,26 @@ class EndpointDialog extends StatelessWidget {
                   ElevatedButton(
                       onPressed: () {
                         if (edit) {
-                          endpoints.value[editIndex!] = ApiEndpoint(_title.text,
-                              _url.text, {}, {}, _requestType.value);
+                          final Map previousResponse =
+                              endpoints.value[editIndex!].result;
+                          final Map previousHeader =
+                              endpoints.value[editIndex!].headers;
+                          final Map previousBody =
+                              endpoints.value[editIndex!].requestBody;
+                          endpoints.value[editIndex!] = ApiEndpoint(
+                            _title.text,
+                            _url.text,
+                            previousResponse,
+                            previousHeader,
+                            _requestType.value,
+                            previousBody,
+                          );
                           endpoints.notifyListeners();
                           return Navigator.pop(context);
                         }
                         endpoints.value.add(
                           ApiEndpoint(_title.text, _url.text, {}, {},
-                              _requestType.value),
+                              _requestType.value, {}),
                         );
                         Navigator.pop(context);
                         endpoints.notifyListeners();

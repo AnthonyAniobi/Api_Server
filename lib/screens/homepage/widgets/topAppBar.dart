@@ -29,7 +29,7 @@ class TopAppBar extends StatelessWidget {
             Row(
               children: [
                 Tooltip(
-                  message: 'run server',
+                  message: 'run',
                   child: IconButton(
                       onPressed: () {},
                       icon: const Icon(
@@ -38,7 +38,7 @@ class TopAppBar extends StatelessWidget {
                       )),
                 ),
                 PopupMenuButton(
-                  tooltip: 'other options',
+                  tooltip: 'options',
                   icon: Icon(Icons.arrow_drop_down_sharp),
                   onSelected: (value) {},
                   itemBuilder: ((context) => [
