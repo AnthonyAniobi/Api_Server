@@ -1,11 +1,14 @@
 import 'package:api_server/models/api_endpoint.dart';
+import 'package:api_server/models/server/server.dart';
 import 'package:api_server/screens/aboutpage/aboutpage.dart';
+import 'package:api_server/screens/settingspage/settingspage.dart';
 import 'package:flutter/material.dart';
 
 class TopAppBar extends StatelessWidget {
   final ValueNotifier<List<ApiEndpoint>> endpoints;
-  final ValueNotifier<bool> isRunning = ValueNotifier(false);
-  TopAppBar({super.key, required this.endpoints});
+  final ValueNotifier<bool> isRunning;
+  const TopAppBar(
+      {super.key, required this.endpoints, required this.isRunning});
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +41,7 @@ class TopAppBar extends StatelessWidget {
                       return Tooltip(
                         message: running ? 'stop' : 'run',
                         child: IconButton(
-                            onPressed: () {
-                              isRunning.value = !isRunning.value;
-                              isRunning.notifyListeners();
-                            },
+                            onPressed: _startServer,
                             icon: Icon(
                               running ? Icons.stop : Icons.play_arrow,
                               color: Colors.black,
@@ -52,14 +52,12 @@ class TopAppBar extends StatelessWidget {
                   tooltip: 'options',
                   icon: Icon(Icons.arrow_drop_down_sharp),
                   onSelected: (value) {
-                    print(value);
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => AboutPage()));
+                    _switchPages(context, value);
                   },
                   itemBuilder: ((context) => [
                         const PopupMenuItem(value: '1', child: Text('About')),
-                        const PopupMenuItem(value: '2', child: Text('Howdy')),
-                        const PopupMenuItem(value: '3', child: Text('Howdy')),
+                        const PopupMenuItem(
+                            value: '2', child: Text('Settings')),
                       ]),
                 ),
               ],
@@ -68,5 +66,30 @@ class TopAppBar extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _startServer() {
+    if (isRunning.value) {
+      isRunning.value = false;
+      Server().stop();
+    } else {
+      isRunning.value = true;
+      Server().start(endpoints.value);
+    }
+    isRunning.notifyListeners();
+  }
+
+  void _switchPages(BuildContext context, String menuIndex) {
+    switch (menuIndex) {
+      case '1':
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => AboutPage()));
+        break;
+      case '2':
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => SettingsPage()));
+        break;
+      default:
+    }
   }
 }

@@ -33,8 +33,8 @@ class EndpointDialog extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: SizedBox(
-          height: 500,
-          width: 400,
+          height: 280,
+          width: 500,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -57,14 +57,10 @@ class EndpointDialog extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
+              const Text('Request Method'),
+              const SizedBox(height: 5),
               _requestEndpoints(),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Checkbox(value: false, onChanged: (value) {}),
-                  const Text('Requires Authentication'),
-                ],
-              ),
+              const Spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -110,6 +106,7 @@ class EndpointDialog extends StatelessWidget {
                       child: const Text("Save")),
                 ],
               ),
+              const SizedBox(height: 10),
             ],
           ),
         ),
@@ -156,7 +153,8 @@ class EndpointDialog extends StatelessWidget {
                 _requestButton(RequestType.get, _requestType),
                 _requestButton(RequestType.post, _requestType),
                 _requestButton(RequestType.delete, _requestType),
-                _requestButton(RequestType.update, _requestType),
+                _requestButton(RequestType.put, _requestType),
+                _requestButton(RequestType.patch, _requestType),
               ],
             )));
   }

@@ -1,30 +1,27 @@
+import 'package:api_server/models/server/server.dart';
 import 'package:flutter/material.dart';
 
 class BottomTerminal extends StatelessWidget {
-  BottomTerminal({super.key, required this.consoleMessage});
-
-  final ValueNotifier<List<String>> consoleMessage;
+  BottomTerminal({super.key});
 
   final double height = 200;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       height: height,
+      color: Colors.grey.shade700,
       width: MediaQuery.of(context).size.width,
       child: ValueListenableBuilder(
-          valueListenable: consoleMessage,
+          valueListenable: Server.consoleMessages,
           builder: (context, terminalList, child) {
             return Stack(
               children: [
-                Container(
-                  height: height,
+                Padding(
                   padding: const EdgeInsets.only(right: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade700,
-                  ),
                   child: ListView.builder(
                       reverse: true,
+                      shrinkWrap: true,
                       itemCount: terminalList.length,
                       itemBuilder: ((context, index) {
                         return Text.rich(TextSpan(
@@ -34,8 +31,8 @@ class BottomTerminal extends StatelessWidget {
                                 fontWeight: FontWeight.w700),
                             children: [
                               TextSpan(
-                                  text:
-                                      'some values ${terminalList.length - index - 1}',
+                                  text: terminalList[
+                                      terminalList.length - index - 1],
                                   style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w300))
@@ -59,7 +56,7 @@ class BottomTerminal extends StatelessWidget {
   }
 
   void _clearConsole() {
-    consoleMessage.value.clear();
-    consoleMessage.notifyListeners();
+    Server.consoleMessages.value.clear();
+    Server.consoleMessages.notifyListeners();
   }
 }

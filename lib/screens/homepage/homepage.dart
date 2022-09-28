@@ -10,45 +10,74 @@ import 'package:flutter/material.dart';
 class Homepage extends StatelessWidget {
   Homepage({super.key});
 
-  ValueNotifier<List<ApiEndpoint>> endpoints =
+  final ValueNotifier<List<ApiEndpoint>> endpoints =
       ValueNotifier<List<ApiEndpoint>>([]);
-  ValueNotifier<int> currentEndpoint = ValueNotifier<int>(0);
-  ValueNotifier<List<String>> consoleMessages =
-      ValueNotifier<List<String>>(List.generate(20, (index) => 1.toString()));
-
+  final ValueNotifier<int> currentEndpoint = ValueNotifier<int>(0);
+  final ValueNotifier<bool> isRunning = ValueNotifier<bool>(false);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          TopAppBar(endpoints: endpoints),
-          Expanded(
-            child: Row(
-              children: [
-                EndpointsWidget(
-                  currentEndpoint: currentEndpoint,
-                  endpoints: endpoints,
-                ),
-                Expanded(
-                    flex: 4,
-                    child: ValueListenableBuilder(
-                        valueListenable: endpoints,
-                        builder: (context, endpointValues, child) {
-                          return endpointValues.isEmpty
-                              ? const Center(
-                                  child: Text(
-                                      textAlign: TextAlign.center,
-                                      'No Endpoint created!\nClick Add Endpoints to create an endpoint'),
-                                )
-                              : JsonEditorWidget(
-                                  currentEndpoint: currentEndpoint,
-                                  endpointList: endpoints,
-                                );
-                        })),
-              ],
-            ),
+          TopAppBar(
+            endpoints: endpoints,
+            isRunning: isRunning,
           ),
-          BottomTerminal(consoleMessage: consoleMessages),
+          Expanded(
+            child: ValueListenableBuilder(
+                valueListenable: isRunning,
+                builder: (context, running, child) {
+                  return running
+                      ? Container(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'Running  !!!',
+                                style: TextStyle(
+                                  fontSize: 27,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              const CircularProgressIndicator(),
+                              const SizedBox(height: 10),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    isRunning.value = false;
+                                    isRunning.notifyListeners();
+                                  },
+                                  child: const Text('Stop Server'))
+                            ],
+                          ))
+                      : Row(
+                          children: [
+                            EndpointsWidget(
+                              currentEndpoint: currentEndpoint,
+                              endpoints: endpoints,
+                            ),
+                            Expanded(
+                                flex: 4,
+                                child: ValueListenableBuilder(
+                                    valueListenable: endpoints,
+                                    builder: (context, endpointValues, child) {
+                                      return endpointValues.isEmpty
+                                          ? const Center(
+                                              child: Text(
+                                                  textAlign: TextAlign.center,
+                                                  'No Endpoint created!\nClick Add Endpoints to create an endpoint'),
+                                            )
+                                          : JsonEditorWidget(
+                                              currentEndpoint: currentEndpoint,
+                                              endpointList: endpoints,
+                                            );
+                                    })),
+                          ],
+                        );
+                }),
+          ),
+          BottomTerminal(),
         ],
       ),
     );
