@@ -6,7 +6,6 @@ class BottomTerminal extends StatelessWidget {
   final ValueNotifier<List<String>> consoleMessage;
 
   final double height = 200;
-  final ScrollController listController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +25,6 @@ class BottomTerminal extends StatelessWidget {
                   ),
                   child: ListView.builder(
                       reverse: true,
-                      controller: listController,
                       itemCount: terminalList.length,
                       itemBuilder: ((context, index) {
                         return Text.rich(TextSpan(
@@ -37,7 +35,7 @@ class BottomTerminal extends StatelessWidget {
                             children: [
                               TextSpan(
                                   text:
-                                      'some values ${terminalList.length - index}',
+                                      'some values ${terminalList.length - index - 1}',
                                   style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w300))
