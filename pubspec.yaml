@@ -35,8 +35,9 @@ dependencies:
   flutter:
     sdk: flutter
   json_editor: ^0.0.8
-  
+
 dev_dependencies:
+  build_runner: ^2.2.1
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
