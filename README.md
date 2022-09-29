@@ -41,7 +41,7 @@ setup ci/cd for the project
 - [x] Build the User interface on home page
 - [x] Link server to the frontend
 - [x] Add Error response tab on json editor
-- [ ] Add method type indicator on endpoint list widget
+- [x] Add method type indicator on endpoint list widget
 - [ ] Setup Ci/Cd for building macos, web and linux apps 
 - [ ] Build the User interface for settings page
 - [ ] Build the User interface for help page
