@@ -18,7 +18,7 @@ An api server for frontend developers. This application builds a local mock serv
 
 
 ## how to use
-1. [download](https://github.com/AnthonyAniobi/Api_Server/releases) the version for your os and Install and you are good to go
+1. [download](https://github.com/AnthonyAniobi/Api_Server/releases) the version for your os and Install and you are good to go. *Ps: the build
 2. Click on the button to add an api endpoint
 3. Specify a title and the url for the endpoint
 4. Click on save to add this to the list of endpoints
@@ -41,11 +41,15 @@ setup ci/cd for the project
 - [x] Link server to the frontend
 - [x] Add Error response tab on json editor
 - [x] Add method type indicator on endpoint list widget
-- [x] Setup Ci/Cd for building macos, web and linux apps 
+- [x] Setup Ci/Cd for building macos, web and linux apps
+- [ ] Setup App Icon and Installation requirements for windows linux and macos
 - [ ] Build the User interface for settings page
 - [ ] Build the User interface for help page
 - [ ] Build the User interface for the about page
+- [ ] Build the User interface for all profiles
+- [ ] Setup saving endpoints to device
 - [ ] Add instructions on how to use the app in the about page
 - [ ] Add link for contribution to the project 
 - [ ] Setup test for headers and authorizations to endpoints
 - [ ] Setup the body for request
+- [ ] Setup flow for building endpoints from open api schema
