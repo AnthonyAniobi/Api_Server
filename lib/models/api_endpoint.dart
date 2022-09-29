@@ -14,10 +14,17 @@ class ApiEndpoint extends Equatable {
   final Map result;
   final Map headers;
   final Map requestBody;
+  final Map errorResult;
   final String type;
 
-  const ApiEndpoint(this.title, this.url, this.result, this.headers, this.type,
-      this.requestBody);
+  const ApiEndpoint(
+      {required this.title,
+      required this.url,
+      required this.result,
+      required this.headers,
+      required this.type,
+      required this.requestBody,
+      required this.errorResult});
 
   @override
   List<Object?> get props => throw [title, url, result, type];

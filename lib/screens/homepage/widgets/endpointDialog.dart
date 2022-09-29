@@ -83,20 +83,30 @@ class EndpointDialog extends StatelessWidget {
                               endpoints.value[editIndex!].headers;
                           final Map previousBody =
                               endpoints.value[editIndex!].requestBody;
+                          final Map previousError =
+                              endpoints.value[editIndex!].errorResult;
                           endpoints.value[editIndex!] = ApiEndpoint(
-                            _title.text,
-                            _url.text,
-                            previousResponse,
-                            previousHeader,
-                            _requestType.value,
-                            previousBody,
+                            title: _title.text,
+                            url: _url.text,
+                            result: previousResponse,
+                            headers: previousHeader,
+                            requestBody: previousBody,
+                            errorResult: previousError,
+                            type: _requestType.value,
                           );
                           endpoints.notifyListeners();
                           return Navigator.pop(context);
                         }
                         endpoints.value.add(
-                          ApiEndpoint(_title.text, _url.text, {}, {},
-                              _requestType.value, {}),
+                          ApiEndpoint(
+                            title: _title.text,
+                            url: _url.text,
+                            type: _requestType.value,
+                            result: {},
+                            errorResult: {},
+                            requestBody: {},
+                            headers: {},
+                          ),
                         );
                         Navigator.pop(context);
                         currentEndpoint.value = endpoints.value.length - 1;

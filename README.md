@@ -41,9 +41,13 @@ setup ci/cd for the project
 # Tasks
 - [x] Build the User interface on home page
 - [x] Link server to the frontend
-- [ ] Build the User interface on settings page
-- [ ] Build the User interface on help page
+- [x] Add Error response tab on json editor
+- [ ] Add method type indicator on endpoint list widget
+- [ ] Setup Ci/Cd for building macos, web and linux apps 
+- [ ] Build the User interface for settings page
+- [ ] Build the User interface for help page
+- [ ] Build the User interface for the about page
+- [ ] Add instructions on how to use the app in the about page
 - [ ] Add link for contribution to the project 
 - [ ] Setup test for headers and authorizations to endpoints
 - [ ] Setup the body for request
-- [ ] Add Error response tab on json editor

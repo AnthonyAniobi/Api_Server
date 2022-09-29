@@ -8,10 +8,12 @@ class _JsonTabs {
   static const String response = 'Response';
   static const String body = 'Body';
   static const String header = 'Header';
+  static const String errorResponse = 'Error Response';
   // tool tips
   static const String responseTooltip = 'json response';
   static const String bodyTooltip = 'request body';
   static const String headerTooltip = 'header response';
+  static const String errorTooltip = 'error response';
 }
 
 class JsonEditorWidget extends StatelessWidget {
@@ -43,6 +45,8 @@ class JsonEditorWidget extends StatelessWidget {
                         _JsonTabs.body, currentTab, _JsonTabs.bodyTooltip),
                     _jsonTabButton(
                         _JsonTabs.header, currentTab, _JsonTabs.headerTooltip),
+                    _jsonTabButton(_JsonTabs.errorResponse, currentTab,
+                        _JsonTabs.errorTooltip),
                   ],
                 ),
               ),
@@ -108,6 +112,8 @@ class JsonEditorTab extends StatelessWidget {
       _json = endpoint.headers;
     } else if (jsonTab == _JsonTabs.response) {
       _json = endpoint.result;
+    } else if (jsonTab == _JsonTabs.errorResponse) {
+      _json = endpoint.errorResult;
     } else {
       _json = {};
     }
@@ -129,6 +135,9 @@ class JsonEditorTab extends StatelessWidget {
         } else if (jsonTab == _JsonTabs.header) {
           endpoint.headers.clear();
           endpoint.headers.addAll(jsonDecode(value.toString()));
+        } else if (jsonTab == _JsonTabs.errorResponse) {
+          endpoint.errorResult.clear();
+          endpoint.errorResult.addAll(jsonDecode(value.toString()));
         } else {
           endpoint.result.clear();
           endpoint.result.addAll(jsonDecode(value.toString()));
