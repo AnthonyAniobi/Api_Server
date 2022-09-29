@@ -1,4 +1,4 @@
-name: Desktop Deployment
+name: Flutter Desktop Deployment
 
 on:
   push:
