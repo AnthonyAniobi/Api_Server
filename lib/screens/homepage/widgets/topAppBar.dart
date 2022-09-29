@@ -1,7 +1,9 @@
 import 'package:api_server/models/api_endpoint.dart';
 import 'package:api_server/models/server/server.dart';
 import 'package:api_server/screens/aboutpage/aboutpage.dart';
+import 'package:api_server/screens/helppage/help_page.dart';
 import 'package:api_server/screens/settingspage/settingspage.dart';
+import 'package:api_server/widgets/dialogs.dart';
 import 'package:flutter/material.dart';
 
 class TopAppBar extends StatelessWidget {
@@ -30,7 +32,7 @@ class TopAppBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(
-              'Api Server',
+              'Local Api Server',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             Row(
@@ -41,7 +43,9 @@ class TopAppBar extends StatelessWidget {
                       return Tooltip(
                         message: running ? 'stop' : 'run',
                         child: IconButton(
-                            onPressed: _startServer,
+                            onPressed: () {
+                              _startServer(context);
+                            },
                             icon: Icon(
                               running ? Icons.stop : Icons.play_arrow,
                               color: Colors.black,
@@ -55,9 +59,10 @@ class TopAppBar extends StatelessWidget {
                     _switchPages(context, value);
                   },
                   itemBuilder: ((context) => [
-                        const PopupMenuItem(value: '1', child: Text('About')),
+                        const PopupMenuItem(value: '1', child: Text('Help')),
+                        const PopupMenuItem(value: '2', child: Text('About')),
                         const PopupMenuItem(
-                            value: '2', child: Text('Settings')),
+                            value: '3', child: Text('Settings')),
                       ]),
                 ),
               ],
@@ -68,7 +73,14 @@ class TopAppBar extends StatelessWidget {
     );
   }
 
-  void _startServer() {
+  void _startServer(BuildContext context) {
+    // check if there is any endpoints
+    if (endpoints.value.isEmpty && !isRunning.value) {
+      Dialogs.alert(context,
+          title: 'No Endpoint',
+          message: 'You have to specify an endpoint before starting a server');
+      return;
+    }
     if (isRunning.value) {
       isRunning.value = false;
       Server().stop();
@@ -83,9 +95,13 @@ class TopAppBar extends StatelessWidget {
     switch (menuIndex) {
       case '1':
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => AboutPage()));
+            context, MaterialPageRoute(builder: (context) => HelpPage()));
         break;
       case '2':
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => AboutPage()));
+        break;
+      case '3':
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => SettingsPage()));
         break;

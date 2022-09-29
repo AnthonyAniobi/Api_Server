@@ -42,12 +42,15 @@ class BottomTerminal extends StatelessWidget {
                 Positioned(
                     right: 0,
                     top: 0,
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.clear_all,
-                        color: Colors.white,
+                    child: Tooltip(
+                      message: 'clear console',
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.clear_all,
+                          color: Colors.white,
+                        ),
+                        onPressed: _clearConsole,
                       ),
-                      onPressed: _clearConsole,
                     )),
               ],
             );

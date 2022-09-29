@@ -33,18 +33,24 @@ class Homepage extends StatelessWidget {
                           padding: const EdgeInsets.all(20),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
+                            children: [
+                              const Text(
                                 'Running  !!!',
                                 style: TextStyle(
                                   fontSize: 27,
                                   fontWeight: FontWeight.normal,
                                 ),
                               ),
-                              SizedBox(height: 10),
-                              CircularProgressIndicator(),
-                              SizedBox(height: 10),
-                              Text('Click the Stop button above to Stop Server')
+                              const SizedBox(height: 10),
+                              const CircularProgressIndicator(),
+                              const SizedBox(height: 10),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    isRunning.value = false;
+                                    Server().stop();
+                                    isRunning.notifyListeners();
+                                  },
+                                  child: const Text('Stop Server'))
                             ],
                           ))
                       : Row(

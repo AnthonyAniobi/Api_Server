@@ -99,9 +99,9 @@ class EndpointDialog extends StatelessWidget {
                               _requestType.value, {}),
                         );
                         Navigator.pop(context);
-                        endpoints.notifyListeners();
                         currentEndpoint.value = endpoints.value.length - 1;
                         currentEndpoint.notifyListeners();
+                        endpoints.notifyListeners();
                       },
                       child: const Text("Save")),
                 ],
@@ -140,6 +140,10 @@ class EndpointDialog extends StatelessWidget {
                   "This endpoint has already been created please use another url");
         }
       }
+    }
+    final addedUrl = _url.text;
+    if (!addedUrl.startsWith('/')) {
+      _url.text = '/$addedUrl';
     }
     return result;
   }
