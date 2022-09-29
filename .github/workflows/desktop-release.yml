@@ -65,6 +65,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tag_name: ${{github.ref_name}}
           files: build/windows/runner/Release/local_api_server-${{github.ref_name}}-windows.zip
 
   build-and-release-macos:
@@ -94,4 +95,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tag_name: ${{github.ref_name}}
           files: build/macos/Build/Products/Release/local_api_server-${{github.ref_name}}-macos.zip
