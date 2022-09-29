@@ -11,11 +11,10 @@ An api server for frontend developers. This application builds a local mock serv
 > Are you working with a team of engineers still in the process of setting up a backend for your frontend project. But you need a frontend server to test your designs and see if everything goes as predicted. Then this application is for you.
 > Just make use of a simple to use GUI panel to setup a server that returns a response based on the rules you specify. And then you can go on with your project without worrying about when the backend guys get done with the actual server 😉.
 
+# Preview
 
 ## Screenshots
-<img src="screenshots/add_endpoint.png" width=300/>
-<img src="screenshots/endpoints_page.png" width=300/>
-<img src="screenshots/running_endpoints.png" width=300/>
+<img src="screenshots/add_endpoint.png" width=300/>,<img src="screenshots/endpoints_page.png" width=300/>,<img src="screenshots/running_endpoints.png" width=300/>
 
 
 ## how to use

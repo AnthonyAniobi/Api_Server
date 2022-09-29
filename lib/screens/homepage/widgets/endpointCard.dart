@@ -41,18 +41,23 @@ class EndpointCard extends StatelessWidget {
                     // Generally, material cards do not have a highlight overlay.
                     highlightColor: Colors.transparent,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 8.0),
+                      padding: const EdgeInsets.fromLTRB(20, 8, 0, 0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            endpoints.value[listIndex].title,
-                            style: TextStyle(
-                              color: listIndex == currentIndex
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
+                          Wrap(
+                            children: [
+                              Text(
+                                endpoints.value[listIndex].title,
+                                style: TextStyle(
+                                  color: listIndex == currentIndex
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              ),
+                              _EndpointMethodChip(
+                                  type: endpoints.value[listIndex].type),
+                            ],
                           ),
                           const SizedBox(height: 5),
                           Text(
@@ -110,6 +115,52 @@ class EndpointCard extends StatelessWidget {
             ),
           );
         });
+  }
+}
+
+class _EndpointMethodChip extends StatelessWidget {
+  final String type;
+  Color color = Colors.black;
+
+  _EndpointMethodChip({
+    Key? key,
+    required this.type,
+  }) : super(key: key) {
+    switch (type) {
+      case RequestType.get:
+        color = Colors.green;
+        break;
+      case RequestType.post:
+        color = Colors.orangeAccent;
+        break;
+      case RequestType.delete:
+        color = Colors.deepOrange;
+        break;
+      case RequestType.put:
+        color = Colors.purple;
+        break;
+      case RequestType.patch:
+        color = Colors.grey;
+        break;
+      default:
+        color = Colors.black;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(left: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        type,
+        style: TextStyle(fontSize: 10, color: Colors.white),
+      ),
+    );
   }
 }
 

@@ -37,7 +37,9 @@ class JsonEditorWidget extends StatelessWidget {
             children: [
               Container(
                 color: tabBackgroundColor,
-                child: Row(
+                height: 40,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
                   children: [
                     _jsonTabButton(_JsonTabs.response, currentTab,
                         _JsonTabs.responseTooltip),
@@ -70,31 +72,28 @@ class JsonEditorWidget extends StatelessWidget {
 
   Widget _jsonTabButton(
       String value, ValueNotifier<String> currentTab, String tooltip) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 10),
-      child: Tooltip(
-        message: tooltip,
-        child: InkWell(
-          onTap: () {
-            currentTab.value = value;
-            currentTab.notifyListeners();
-          },
-          child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              decoration: BoxDecoration(
-                color: value == currentTab.value
-                    ? selectedTabColor
-                    : tabBackgroundColor,
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(5)),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(
-                    color:
-                        value == currentTab.value ? Colors.black : Colors.grey),
-              )),
-        ),
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        onTap: () {
+          currentTab.value = value;
+          currentTab.notifyListeners();
+        },
+        child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            decoration: BoxDecoration(
+              color: value == currentTab.value
+                  ? selectedTabColor
+                  : tabBackgroundColor,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(5)),
+            ),
+            child: Text(
+              value,
+              style: TextStyle(
+                  color:
+                      value == currentTab.value ? Colors.black : Colors.grey),
+            )),
       ),
     );
   }

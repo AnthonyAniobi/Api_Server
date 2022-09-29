@@ -140,9 +140,16 @@ class EndpointDialog extends StatelessWidget {
             title: 'Empty Endpoint',
             message: "The endpoint url should not be empty");
       }
+    } else if (_url.text.trim().contains(' ')) {
+      result = false;
+      Dialogs.alert(context,
+          title: 'Wrong Url', message: "Url should not have spaces");
     } else {
       for (ApiEndpoint ePoint in endpoints.value) {
         if (ePoint.url == _url.text && ePoint.type == _requestType.value) {
+          if (ePoint == endpoints.value[currentEndpoint.value]) {
+            return true;
+          }
           result = false;
           Dialogs.alert(context,
               title: 'Endpoint exists',
