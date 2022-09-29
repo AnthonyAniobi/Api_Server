@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  APP_NAME:Local_Api_Server
+  APP_NAME: Local_Api_Server
 
 jobs:
   build-and-release-linux:
