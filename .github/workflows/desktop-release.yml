@@ -1,6 +1,12 @@
-name: Flutter CI
+name: Desktop Deployment
 
-on: push
+on:
+  push:
+    branches:
+      - main
+
+env:
+  APP_NAME:Local_Api_Server
 
 jobs:
   build-and-release-linux:
@@ -25,15 +31,14 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          filename: MacRecoveryX-${{github.ref_name}}-linux.zip
+          filename: $APP_NAME-${{github.ref_name}}-linux.zip
           directory: build/linux/x64/release/bundle
       - name: Linux Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: build/linux/x64/release/bundle/MacRecoveryX-${{github.ref_name}}-linux.zip
+          files: build/linux/x64/release/bundle/$APP_NAME-${{github.ref_name}}-linux.zip
 
   build-and-release-windows:
     runs-on: windows-latest
@@ -55,15 +60,14 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          filename: MacRecoveryX-${{github.ref_name}}-windows.zip
+          filename: $APP_NAME-${{github.ref_name}}-windows.zip
           directory: build/windows/runner/Release
       - name: Windows Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: build/windows/runner/Release/MacRecoveryX-${{github.ref_name}}-windows.zip
+          files: build/windows/runner/Release/$APP_NAME-${{github.ref_name}}-windows.zip
 
   build-and-release-macos:
     runs-on: macos-latest
@@ -85,12 +89,11 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          filename: MacRecoveryX-${{github.ref_name}}-macos.zip
+          filename: $APP_NAME-${{github.ref_name}}-macos.zip
           directory: build/macos/Build/Products/Release
       - name: macOS Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: build/macos/Build/Products/Release/MacRecoveryX-${{github.ref_name}}-macos.zip
+          files: build/macos/Build/Products/Release/$APP_NAME-${{github.ref_name}}-macos.zip
