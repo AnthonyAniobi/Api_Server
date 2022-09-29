@@ -38,6 +38,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tag_name: ${{github.ref_name}}
           files: build/linux/x64/release/bundle/$APP_NAME-${{github.ref_name}}-linux.zip
 
   build-and-release-windows:
