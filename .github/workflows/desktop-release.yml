@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    path:
+      - 'version_code'
 
 jobs:
   build-and-release-linux:
