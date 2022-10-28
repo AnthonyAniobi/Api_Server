@@ -27,5 +27,5 @@ class ApiEndpoint extends Equatable {
       required this.errorResult});
 
   @override
-  List<Object?> get props => throw [title, url, result, type];
+  List<Object?> get props => [url, type];
 }
