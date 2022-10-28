@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'version_code'
+      - 'versioning'
 
 jobs:
   build-and-release-linux:
