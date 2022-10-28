@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-    path:
+    paths:
       - 'version_code'
 
 jobs:
