@@ -77,8 +77,28 @@ class _DragHandle extends StatelessWidget {
   }
 }
 
-class _TerminalBody extends StatelessWidget {
+class _TerminalBody extends StatefulWidget {
   const _TerminalBody();
+
+  @override
+  State<_TerminalBody> createState() => _TerminalBodyState();
+}
+
+class _TerminalBodyState extends State<_TerminalBody> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_scrollController.hasClients) return;
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,12 +107,13 @@ class _TerminalBody extends StatelessWidget {
       child: BlocSelector<ServerCubit, ServerState, List<String>>(
         selector: (state) => state.consoleMessages,
         builder: (context, terminalList) {
+          _scrollToBottom();
           return Stack(
             children: [
               Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: ListView.builder(
-                  reverse: true,
+                  controller: _scrollController,
                   itemCount: terminalList.length,
                   itemBuilder: (context, index) {
                     return Text.rich(TextSpan(
@@ -103,7 +124,7 @@ class _TerminalBody extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: terminalList[terminalList.length - index - 1],
+                          text: terminalList[index],
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w300,
