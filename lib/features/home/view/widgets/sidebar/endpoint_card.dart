@@ -16,12 +16,14 @@ class EndpointCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<EndpointsCubit, EndpointsState, ({ApiEndpoint endpoint, bool isSelected})>(
+    return BlocSelector<EndpointsCubit, EndpointsState, ({ApiEndpoint? endpoint, bool isSelected})>(
       selector: (state) => (
-        endpoint: state.endpoints[listIndex],
+        endpoint: listIndex < state.endpoints.length ? state.endpoints[listIndex] : null,
         isSelected: state.currentIndex == listIndex,
       ),
       builder: (context, data) {
+        if (data.endpoint == null) return const SizedBox.shrink();
+        final endpoint = data.endpoint!;
         return Card(
           color: data.isSelected ? Theme.of(context).primaryColor : null,
           child: Row(
@@ -44,18 +46,18 @@ class EndpointCard extends StatelessWidget {
                         Wrap(
                           children: [
                             Text(
-                              data.endpoint.title,
+                              endpoint.title,
                               style: TextStyle(
                                 color:
                                     data.isSelected ? Colors.white : Colors.black,
                               ),
                             ),
-                            EndpointMethodChip(type: data.endpoint.type),
+                            EndpointMethodChip(type: endpoint.type),
                           ],
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          data.endpoint.url,
+                          endpoint.url,
                           style: TextStyle(
                             color: data.isSelected ? Colors.white : Colors.blue,
                             fontSize: 12,
@@ -86,7 +88,7 @@ class EndpointCard extends StatelessWidget {
                     ),
                     EditOrDeleteButton(
                       text: 'Delete',
-                      onPressed: () => _confirmDelete(context, data.endpoint),
+                      onPressed: () => _confirmDelete(context, endpoint),
                     ),
                   ],
                 ),
