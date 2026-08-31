@@ -31,20 +31,20 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Colors.grey.shade400,
         )
       ]),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               AppStrings.appTitle,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             Row(
               children: [
-                const _PortField(),
-                const SizedBox(width: 10),
-                const _RunButton(),
+                _PortField(),
+                SizedBox(width: 10),
+                _RunButton(),
                 _OptionsMenu(),
               ],
             )
