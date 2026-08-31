@@ -1,101 +1,147 @@
-name: Flutter Desktop Deployment
+name: Desktop Release
 
-# on:
-#   push:
-#     branches:
-#       - main
-#     paths:
-#       - 'versioning'
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to build and release (e.g. v1.0.0)"
+        required: true
+
+env:
+  FLUTTER_CHANNEL: "stable"
+  ARTIFACT_NAME: api-server
 
 jobs:
-  build-and-release-linux:
+  build-linux:
+    name: Build Linux
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v1
+      - uses: actions/checkout@v4
         with:
-          channel: 'stable'
-      - name: Install dependencies
-        run: sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+
       - name: Install project dependencies
         run: flutter pub get
+
       - name: Generate intermediates
         run: flutter pub run build_runner build --delete-conflicting-outputs
-      - name: Enable linux build
+
+      - name: Enable Linux desktop
         run: flutter config --enable-linux-desktop
-      - name: Build artifacts
+
+      - name: Build
         run: flutter build linux --release
-      - name: Archive Release
-        uses: thedoctor0/zip-release@master
-        with:
-          type: 'zip'
-          filename: local_api_server-${{github.ref_name}}-linux.zip
-          directory: build/linux/x64/release/bundle
-      - name: Linux Release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{github.ref_name}}
-          files: build/linux/x64/release/bundle/local_api_server-${{github.ref_name}}-linux.zip
 
-  build-and-release-windows:
+      - name: Package
+        run: |
+          cd build/linux/x64/release/bundle
+          zip -r "${{ env.ARTIFACT_NAME }}-linux-x64.zip" .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
+          path: build/linux/x64/release/bundle/${{ env.ARTIFACT_NAME }}-linux-x64.zip
+
+  build-windows:
+    name: Build Windows
     runs-on: windows-latest
-
     steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v1
+      - uses: actions/checkout@v4
         with:
-          channel: 'stable'
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
       - name: Install project dependencies
         run: flutter pub get
+
       - name: Generate intermediates
         run: flutter pub run build_runner build --delete-conflicting-outputs
-      - name: Enable windows build
+
+      - name: Enable Windows desktop
         run: flutter config --enable-windows-desktop
-      - name: Build artifacts
+
+      - name: Build
         run: flutter build windows --release
-      - name: Archive Release
-        uses: thedoctor0/zip-release@master
-        with:
-          type: 'zip'
-          filename: local_api_server-${{github.ref_name}}-windows.zip
-          directory: build/windows/runner/Release
-      - name: Windows Release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{github.ref_name}}
-          files: build/windows/runner/Release/local_api_server-${{github.ref_name}}-windows.zip
 
-  build-and-release-macos:
+      - name: Package
+        shell: pwsh
+        run: |
+          $releaseDir = Get-ChildItem -Path "build/windows" -Recurse -Directory -Filter "Release" | Select-Object -First 1
+          Compress-Archive -Path "$($releaseDir.FullName)\*" -DestinationPath "${{ env.ARTIFACT_NAME }}-windows-x64.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: ${{ env.ARTIFACT_NAME }}-windows-x64.zip
+
+  build-macos:
+    name: Build macOS
     runs-on: macos-latest
-
     steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v1
+      - uses: actions/checkout@v4
         with:
-          channel: 'stable'
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
       - name: Install project dependencies
         run: flutter pub get
+
       - name: Generate intermediates
         run: flutter pub run build_runner build --delete-conflicting-outputs
-      - name: Enable macOS build
+
+      - name: Enable macOS desktop
         run: flutter config --enable-macos-desktop
-      - name: Build artifacts
+
+      - name: Build
         run: flutter build macos --release
-      - name: Archive Release
-        uses: thedoctor0/zip-release@master
+
+      - name: Package
+        run: |
+          cd build/macos/Build/Products/Release
+          zip -r "${{ env.ARTIFACT_NAME }}-macos.zip" *.app
+
+      - uses: actions/upload-artifact@v4
         with:
-          type: 'zip'
-          filename: local_api_server-${{github.ref_name}}-macos.zip
-          directory: build/macos/Build/Products/Release
-      - name: macOS Release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: macos-build
+          path: build/macos/Build/Products/Release/${{ env.ARTIFACT_NAME }}-macos.zip
+
+  release:
+    name: Create Release
+    needs: [build-linux, build-windows, build-macos]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
         with:
-          tag_name: ${{github.ref_name}}
-          files: build/macos/Build/Products/Release/local_api_server-${{github.ref_name}}-macos.zip
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          name: ${{ github.event.inputs.tag || github.ref_name }}
+          generate_release_notes: true
+          files: artifacts/*
