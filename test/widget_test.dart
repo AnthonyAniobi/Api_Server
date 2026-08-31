@@ -1,30 +1,55 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:api_server/main.dart';
+import 'package:api_server/app.dart';
+import 'package:api_server/core/constants/app_strings.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Home page renders the app title and empty state',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const App());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text(AppStrings.appTitle), findsOneWidget);
+    expect(find.text(AppStrings.noEndpointTitle), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
+  testWidgets('Add button offers Add Manually and Import Schema',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const App());
+
     await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text(AppStrings.addManually), findsOneWidget);
+    expect(find.text(AppStrings.importSchema), findsOneWidget);
+  });
+
+  testWidgets('Add Manually creates an endpoint visible in the sidebar',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const App());
+
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(AppStrings.addManually));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.widgetWithText(TextField, 'Title'), 'Users');
+    await tester.enterText(find.widgetWithText(TextField, 'Url'), '/users');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Users'), findsOneWidget);
+    expect(find.text('/users'), findsOneWidget);
+    expect(find.text(AppStrings.noEndpointTitle), findsNothing);
+  });
+
+  testWidgets('Starting the server without endpoints shows an alert',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const App());
+
+    await tester.tap(find.byIcon(Icons.play_arrow));
+    await tester.pumpAndSettle();
+
+    expect(find.text(AppStrings.noEndpointDialogTitle), findsOneWidget);
   });
 }

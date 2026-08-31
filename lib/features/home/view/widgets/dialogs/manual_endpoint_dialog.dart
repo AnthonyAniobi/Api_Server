@@ -50,9 +50,9 @@ class _ManualEndpointDialogState extends State<ManualEndpointDialog> {
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: SizedBox(
-          height: 280,
           width: 500,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
@@ -71,7 +71,7 @@ class _ManualEndpointDialogState extends State<ManualEndpointDialog> {
               const Text('Request Method'),
               const SizedBox(height: 5),
               _requestMethodRow(),
-              const Spacer(),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
