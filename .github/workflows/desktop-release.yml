@@ -1,11 +1,11 @@
 name: Flutter Desktop Deployment
 
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'versioning'
+# on:
+#   push:
+#     branches:
+#       - main
+#     paths:
+#       - 'versioning'
 
 jobs:
   build-and-release-linux:
