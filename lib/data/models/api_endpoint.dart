@@ -1,5 +1,9 @@
 import 'package:equatable/equatable.dart';
 
+/// The four editable JSON payloads that make up an [ApiEndpoint], shared
+/// between the JSON editor tabs (UI) and endpoint field updates (data).
+enum EndpointField { response, requestBody, headers, errorResponse }
+
 class ApiEndpoint extends Equatable {
   final String title;
   final String url;
