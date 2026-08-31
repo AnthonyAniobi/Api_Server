@@ -12,11 +12,11 @@ class ServerCubit extends Cubit<ServerState> {
       : _server = server ?? LocalServer.instance,
         super(const ServerState());
 
-  Future<void> start(List<ApiEndpoint> endpoints) async {
+  Future<void> start(List<ApiEndpoint> Function() getEndpoints) async {
     final ip = await NetworkUtils.getLocalIpAddress();
     emit(state.copyWith(isRunning: true, url: 'http://$ip:${state.port}'));
     try {
-      await _server.start(endpoints: endpoints, port: state.port, onLog: _log);
+      await _server.start(getEndpoints: getEndpoints, port: state.port, onLog: _log);
     } catch (e) {
       _log('failed to start server: $e');
       emit(state.copyWith(isRunning: false, clearUrl: true));

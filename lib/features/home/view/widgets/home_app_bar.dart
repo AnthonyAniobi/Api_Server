@@ -144,7 +144,8 @@ class _RunButton extends StatelessWidget {
     if (serverState.isRunning) {
       serverCubit.stop();
     } else {
-      serverCubit.start(endpointsState.endpoints);
+      final endpointsCubit = context.read<EndpointsCubit>();
+      serverCubit.start(() => endpointsCubit.state.endpoints);
     }
   }
 }

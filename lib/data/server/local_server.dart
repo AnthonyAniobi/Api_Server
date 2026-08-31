@@ -16,14 +16,14 @@ class LocalServer {
   bool get isRunning => _server != null;
 
   Future<void> start({
-    required List<ApiEndpoint> endpoints,
+    required List<ApiEndpoint> Function() getEndpoints,
     required int port,
     required ServerLogger onLog,
   }) async {
     _server = await HttpServer.bind(InternetAddress.anyIPv6, port);
     onLog('server started....');
     _server!.forEach((HttpRequest request) {
-      RequestParser(endpoints: endpoints).parse(request);
+      RequestParser(endpoints: getEndpoints()).parse(request);
       onLog('${request.method} at ${request.uri.path}');
       request.response.close();
     });
